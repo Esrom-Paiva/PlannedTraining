@@ -11,6 +11,6 @@ namespace PlannedTraining.Server.Interfaces
 
         void UpdateAluno(Aluno aluno);
 
-        void DeleteAluno(Guid id);
+        void DeleteAluno(long id);
     }
 }

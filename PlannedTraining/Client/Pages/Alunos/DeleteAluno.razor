@@ -1,0 +1,118 @@
+﻿@page "/aluno/delete/{id}"
+@using PlannedTraining.Shared
+@using PlannedTraining.Shared.Enuns
+@using PlannedTraining.Shared.Models
+@inject NavigationManager NavigationManager
+@inject HttpClient Http
+
+<h3>Deletar Aluno</h3>
+<br />
+
+@if (aluno == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <EditForm Model="@aluno" OnValidSubmit="DeletarAluno">
+        <div class="form-group">
+            <label>Nome :</label>
+            <div>
+                <InputText @bind-Value="@aluno.Nome" class="form-control col-sm-3" />
+                <ValidationMessage For="@(() => aluno.Nome)" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Data Nascimento :</label>
+            <div>
+                <InputDate @bind-Value="@aluno.DataNascimento" class="form-control col-sm-3" />
+                <ValidationMessage For="@(() => aluno.DataNascimento)" />
+            </div>
+        </div>
+        <div class="form-group ">
+            <div>
+                <label>Genero :</label>
+                <div>
+                    <InputSelect @bind-Value="@aluno.Genero" class="form-control col-sm-3">
+                        <option value="Select">--Select--</option>
+                        <option value="Masculino">Masculino</option>
+                        <option value="Feminino">Feminino</option>
+                        <option value="Outros">Outros</option>
+                    </InputSelect>
+                    <ValidationMessage For="@(() => aluno.Genero)" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label>Telefone :</label>
+                <div>
+                    <InputText @bind-Value="@aluno.Telefone" class="form-control col-sm-3" />
+                    <ValidationMessage For="@(() => aluno.Telefone)" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div>
+                <label>Email :</label>
+                <div>
+                    <InputText @bind-Value="@aluno.Email" class="form-control col-sm-3" />
+                    <ValidationMessage For="@(() => aluno.Email)" />
+                </div>
+            </div>
+        </div>
+
+        <hr />
+  
+        <div class="form-group">
+            <button type="submit" class="btn btn-danger">Delete</button>
+            <button class="btn btn-warning" @onclick="Cancel">Cancel</button>
+        </div>
+        <br />
+    </EditForm>
+}
+@code {
+    bool loading = false;
+
+    [Parameter]
+    public string Id { get; set; }
+
+    Aluno aluno = new Aluno
+        {
+            Nome = string.Empty,
+            DataNascimento = DateTime.Now,
+            Genero = Genero.Outros,
+            Telefone = string.Empty,
+            Email = string.Empty,
+            Endereco = new Endereco
+            {
+                Rua = string.Empty,
+                Bairro = string.Empty,
+                Cidade = string.Empty,
+                Estado = string.Empty,
+                Cep = string.Empty
+            }
+        };
+
+    protected override async Task OnInitializedAsync()
+    {
+        int idAluno = int.Parse(Id);
+
+        aluno = await Http.GetFromJsonAsync<Aluno>($"api/alunos/{idAluno}");
+    }
+
+    protected async Task DeletarAluno()
+    {
+        int idAluno = int.Parse(Id);
+
+        await Http.DeleteAsync($"api/alunos/{idAluno}");
+
+        Cancel();
+    }
+
+    public void Cancel()
+    {
+        NavigationManager.NavigateTo("aluno/fetchaluno");
+    }
+}

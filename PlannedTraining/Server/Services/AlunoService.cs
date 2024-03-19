@@ -77,15 +77,16 @@ namespace PlannedTraining.Server.Services
             }
         }
 
-        public void DeleteAluno(Guid id)
+        public void DeleteAluno(long id)
         {
             try
             {
-                var aluno = _context.Alunos.Find(id);
+                var aluno = GetAluno(id);
 
                 if (aluno != null)
                 {
                     aluno.RegistroAtivo = false;
+                    aluno.Endereco.RegistroAtivo = false;
 
                     _context.Alunos.Update(aluno);
                     _context.SaveChanges();

@@ -37,7 +37,7 @@ namespace PlannedTraining.Server.Controllers
         }
 
         [HttpDelete("{id}")]
-        public void Delete(Guid id)
+        public void Delete(long id)
         {
             _alunoService.DeleteAluno(id);
         }
