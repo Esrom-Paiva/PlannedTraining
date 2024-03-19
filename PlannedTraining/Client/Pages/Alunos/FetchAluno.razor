@@ -1,0 +1,100 @@
+﻿@page "/aluno/fetchaluno"
+@using PlannedTraining.Shared
+@using PlannedTraining.Shared.Models
+@inject HttpClient Http
+
+<PageTitle>Alunos</PageTitle>
+
+<h3>Alunos</h3>
+
+<br />
+
+<div class="row">
+    <div class="col-md-6">
+        <a href='/aluno/add' class="btn btn-primary" role="button">
+            <i class="fas fa-user-plus"></i>
+            Novo Aluno
+        </a>
+    </div>
+    <div class="input-group col">
+        <input type="text" class="form-control" placeholder="Buscar Alunos"
+               @bind="StringDeBusca" @bind:event="oninput" @onkeyup="FiltroUsuario" />
+        @if (StringDeBusca.Length > 0)
+        {
+            <div class="input-group-append">
+                <button class="btn btn-danger" @onclick="ResetarBusca">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        }
+    </div>
+</div>
+
+@if (alunos == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Idade</th>
+                <th>Genero</th>
+                <th>Telefone</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var aluno in alunos)
+            {
+                <tr>
+                    <td>@aluno.Nome</td>
+                    <td>@aluno.Idade</td>
+                    <td>@aluno.Genero</td>
+                    <td>@aluno.Telefone</td>
+                    <td>@aluno.Email</td>
+                    <td>
+                        <a href='aluno/edit/@aluno.Id' class="btn btn-outline-dark" role="button">
+                            Editar
+                        </a>
+                        <a href='' class="btn btn-outline-danger" role="button">
+                            Deletar
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>   
+    </table>
+}
+@code {
+    private List<Aluno>? alunos;
+    private List<Aluno>? alunosProcurados;
+    protected string StringDeBusca { get; set; } = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        alunos = await Http.GetFromJsonAsync<List<Aluno>>("api/alunos");
+        alunosProcurados = alunos;
+    }
+
+    protected void FiltroUsuario()
+    {
+        if (!string.IsNullOrEmpty(StringDeBusca))
+        {
+            alunos = alunosProcurados?
+                .Where(x => x.Nome.IndexOf(StringDeBusca, StringComparison.OrdinalIgnoreCase) != -1)
+                .ToList();
+        }
+        else
+        {
+            alunos = alunosProcurados;
+        }
+    }
+    public void ResetarBusca()
+    {
+        StringDeBusca = string.Empty;
+        alunos = alunosProcurados;
+    }
+}

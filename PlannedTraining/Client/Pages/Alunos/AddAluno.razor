@@ -1,0 +1,134 @@
+﻿@page "/aluno/add"
+@using PlannedTraining.Shared
+@using PlannedTraining.Shared.Enuns
+@using PlannedTraining.Shared.Models
+@inject NavigationManager NavigationManager
+@inject HttpClient Http
+
+<h3>Adicionar Aluno</h3>
+<br/>
+
+<EditForm Model="@aluno" OnValidSubmit="SalvarAluno">
+    <div class="form-group">
+        <label>Nome :</label>
+        <div>
+            <InputText @bind-Value="@aluno.Nome" class="form-control col-sm-3" />
+            <ValidationMessage For="@(() => aluno.Nome)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Data Nascimento :</label>
+        <div>
+            <InputDate @bind-Value="@aluno.DataNascimento" class="form-control col-sm-3" />
+            <ValidationMessage For="@(() => aluno.DataNascimento)" />
+        </div>
+    </div>
+    <div class="form-group ">
+        <div>
+            <label>Genero :</label>
+            <div>
+                <InputSelect @bind-Value="@aluno.Genero" class="form-control col-sm-3">
+                    <option value="Select">--Select--</option>
+                    <option value="Masculino">Masculino</option>
+                    <option value="Feminino">Feminino</option>
+                    <option value="Outros">Outros</option>
+                </InputSelect>
+                <ValidationMessage For="@(() => aluno.Genero)" />
+            </div>
+        </div>
+    </div>
+    <div class="form-group ">
+        <div>
+            <label>Telefone :</label>
+            <div>
+                <InputText @bind-Value="@aluno.Telefone" class="form-control col-sm-3" />
+                <ValidationMessage For="@(() => aluno.Telefone)" />
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group ">
+        <div>
+            <label>Email :</label>
+            <div>
+                <InputText @bind-Value="@aluno.Email" class="form-control col-sm-3" />
+                <ValidationMessage For="@(() => aluno.Email)" />
+            </div>
+        </div>
+    </div>
+
+    <hr />
+    <h3>Endereço</h3>
+        <div class="row">
+            <div class="col-sm-5">
+                <InputText id="Rua" class="form-control" placeholder="Rua" @bind-Value="aluno.Endereco.Rua" />
+                <ValidationMessage For="@(() => aluno.Endereco.Rua)" />
+            </div>
+        <div class="col-sm-2">
+            <InputNumber id="Numero" class="form-control" placeholder="Número" @bind-Value="aluno.Endereco.Numero" />
+            <ValidationMessage For="@(() => aluno.Endereco.Numero)" />
+        </div>
+            <div class="col-sm-5">
+                <InputText id="Bairro" class="form-control" placeholder="Bairro" @bind-Value="aluno.Endereco.Bairro" />
+                <ValidationMessage For="@(() => aluno.Endereco.Bairro)" />
+            </div>   
+        </div>
+        <br />
+        <div class="row">
+            <div class="form-group">
+            <InputText id="Complemento" class="form-control" placeholder="Complemento" @bind-Value="aluno.Endereco.Complemento" />
+                <ValidationMessage For="@(() => aluno.Endereco.Complemento)" />
+            </div>      
+            </div>
+        <br />
+        <div class="row">
+            <div class="form-group col-sm-6">
+                <InputText id="Cidade" class="form-control" placeholder="Cidade" @bind-Value="aluno.Endereco.Cidade" />
+                <ValidationMessage For="@(() => aluno.Endereco.Cidade)" />
+            </div>
+            <div class="form-group col-md-6">
+                <InputText id="Cep" class="form-control" placeholder="Cep" @bind-Value="aluno.Endereco.Cep" />
+                <ValidationMessage For="@(() => aluno.Endereco.Cep)" />
+            </div>
+        </div>
+    <br />
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button class="btn btn-light" @onclick="Cancel">Cancel</button>
+    </div>
+    <br />
+</EditForm>
+
+@code {
+    bool loading = false;
+
+    Aluno aluno = new Aluno
+    {
+        Nome = string.Empty,
+        DataNascimento = DateTime.Now,
+        Genero = Genero.Outros,
+        Telefone = string.Empty,
+        Email = string.Empty,
+        Endereco = new Endereco 
+        { 
+            Rua = string.Empty,
+            Bairro = string.Empty,
+            Cidade = string.Empty,
+            Estado = string.Empty,
+            Cep = string.Empty
+        }
+    };
+
+    protected async Task SalvarAluno()
+    {
+        
+        await Http.PostAsJsonAsync("api/alunos", aluno);
+
+        Cancel();
+    }
+
+    public void Cancel()
+    {
+        NavigationManager.NavigateTo("aluno/fetchaluno");
+    }
+}
