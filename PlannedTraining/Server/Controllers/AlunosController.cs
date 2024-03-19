@@ -14,15 +14,30 @@ namespace PlannedTraining.Server.Controllers
         {
             _alunoService = alunoService;
         }
+
         [HttpGet]
         public IEnumerable<Aluno> Get()
         {
             return _alunoService.GetAlunos();
         }
+
         [HttpGet("{id}")]
         public Aluno Get(long id)
         {
             return _alunoService.GetAluno(id);
+        }
+
+        [HttpGet("reativar")]
+        public IEnumerable<Aluno> GetAlunosInativados()
+        {
+            return _alunoService.GetAlunosInativados();
+        }
+
+
+        [HttpPost("reativar/{id}")]
+        public void ReativarAluno(long id)
+        {
+            _alunoService.ReativarAluno(id);
         }
 
         [HttpPost]
@@ -30,6 +45,7 @@ namespace PlannedTraining.Server.Controllers
         {
             _alunoService.AddAluno(aluno);
         }
+
         [HttpPut]
         public void Put(Aluno aluno)
         {

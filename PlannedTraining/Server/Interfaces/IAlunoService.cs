@@ -7,9 +7,13 @@ namespace PlannedTraining.Server.Interfaces
         List<Aluno> GetAlunos();
         Aluno GetAluno(long id);
 
+        List<Aluno> GetAlunosInativados();
+
         void AddAluno(Aluno aluno);
 
         void UpdateAluno(Aluno aluno);
+
+        void ReativarAluno(long id);
 
         void DeleteAluno(long id);
     }

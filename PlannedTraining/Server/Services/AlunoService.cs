@@ -28,6 +28,20 @@ namespace PlannedTraining.Server.Services
                 throw;
             }
         }
+        public List<Aluno> GetAlunosInativados()
+        {
+            try
+            {
+                return 
+                    _context.
+                    Alunos.Where(x => x.RegistroAtivo == false)
+                    .OrderByDescending(x => x.InseridoEm).ToList();
+            }
+            catch
+            {
+                throw;
+            }
+        }
         public Aluno GetAluno(long id)
         {
             try
@@ -67,6 +81,29 @@ namespace PlannedTraining.Server.Services
             try
             {
                 aluno.ModificadoEm = DateTime.Now;
+
+                _context.Alunos.Update(aluno);
+                _context.SaveChanges();
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public void ReativarAluno(long id)
+        {
+            try
+            {
+                var aluno = _context.Alunos
+                    .Include(x => x.Endereco)
+                    .FirstOrDefault(x => x.Id == id && !x.RegistroAtivo);
+
+                aluno.RegistroAtivo = true;
+                aluno.ModificadoEm = DateTime.Now;
+
+                aluno.Endereco.RegistroAtivo = true;
+                aluno.Endereco.ModificadoEm = DateTime.Now;
 
                 _context.Alunos.Update(aluno);
                 _context.SaveChanges();

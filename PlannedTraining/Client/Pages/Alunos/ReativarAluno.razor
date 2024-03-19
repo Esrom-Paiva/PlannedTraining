@@ -1,6 +1,7 @@
-﻿@page "/aluno/fetchaluno"
+﻿@page "/aluno/reativar"
 @using PlannedTraining.Shared
 @using PlannedTraining.Shared.Models
+@inject NavigationManager NavigationManager
 @inject HttpClient Http
 
 <PageTitle>Alunos</PageTitle>
@@ -10,18 +11,9 @@
 <br />
 
 <div class="row">
- 
-    <div class="col-md-2">
-        <a href='/aluno/add' class="btn btn-primary" role="button">
-            <i class="fas fa-user-plus"></i>
-            Novo Aluno
-        </a>
-    </div>
-    <div class="col-md-2">
-        <a href='/aluno/reativar' class="btn btn-primary" role="button">
-            <i class="fas fa-user-plus"></i>
-            Reativar Aluno
-        </a>
+
+    <div class="col-md-6">
+        <button class="btn btn-warning" @onclick="Cancel">Cancelar</button>
     </div>
 
     <div class="input-group col">
@@ -64,16 +56,13 @@ else
                     <td>@aluno.Telefone</td>
                     <td>@aluno.Email</td>
                     <td>
-                        <a href='aluno/edit/@aluno.Id' class="btn btn-outline-dark" role="button">
-                            Editar
-                        </a>
-                        <a href='aluno/delete/@aluno.Id' class="btn btn-outline-danger" role="button">
-                            Deletar
-                        </a>
+                        <div class="form-group">
+                            <button @onclick="@(()=>Reativar(aluno.Id))" class="btn btn-outline-success">Reativar</button>
+                        </div>
                     </td>
                 </tr>
             }
-        </tbody>   
+        </tbody>
     </table>
 }
 @code {
@@ -83,7 +72,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        alunos = await Http.GetFromJsonAsync<List<Aluno>>("api/alunos");
+        alunos = await Http.GetFromJsonAsync<List<Aluno>>("api/alunos/reativar");
         alunosProcurados = alunos;
     }
 
@@ -104,5 +93,16 @@ else
     {
         StringDeBusca = string.Empty;
         alunos = alunosProcurados;
+    }
+    public void Cancel()
+    {
+        NavigationManager.NavigateTo("aluno/fetchaluno");
+    }
+
+    public void Reativar(long id)
+    {
+        Http.PostAsJsonAsync($"api/alunos/reativar/{id}", id);
+
+        Cancel();
     }
 }
