@@ -14,6 +14,7 @@ builder.Services.AddDbContext<BaseContext>
     op.UseSqlServer("Server=WINAPNDPNTNVZRL\\MSSQLSERVER02;Database=PlannedTraining;Trusted_Connection=True;"));
 
 builder.Services.AddScoped<IAlunoService, AlunoService>();
+builder.Services.AddScoped<ITreinoService, TreinoService>();
 
 var app = builder.Build();
 
