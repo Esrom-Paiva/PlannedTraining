@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PlannedTraining.Server.Context;
 
@@ -11,9 +12,10 @@ using PlannedTraining.Server.Context;
 namespace PlannedTraining.Server.Migrations
 {
     [DbContext(typeof(BaseContext))]
-    partial class BaseContextModelSnapshot : ModelSnapshot
+    [Migration("20240417002855_ajuste_Pk_treino")]
+    partial class ajuste_Pk_treino
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -129,6 +131,9 @@ namespace PlannedTraining.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<long>("ExwecicioId")
+                        .HasColumnType("bigint");
+
                     b.Property<DateTime>("InseridoEm")
                         .HasColumnType("datetime2");
 
@@ -142,7 +147,7 @@ namespace PlannedTraining.Server.Migrations
                     b.Property<bool>("RegistroAtivo")
                         .HasColumnType("bit");
 
-                    b.Property<long>("TreinoId")
+                    b.Property<long?>("TreinoId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
@@ -193,9 +198,7 @@ namespace PlannedTraining.Server.Migrations
                 {
                     b.HasOne("PlannedTraining.Shared.Models.Treino", null)
                         .WithMany("Exercicios")
-                        .HasForeignKey("TreinoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TreinoId");
                 });
 
             modelBuilder.Entity("PlannedTraining.Shared.Models.Aluno", b =>

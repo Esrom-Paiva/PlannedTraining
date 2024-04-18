@@ -12,7 +12,7 @@ namespace PlannedTraining.Shared.Models
         public string Nome { get; set; }
         public string Descricao { get; set; }
 
-        [ForeignKey("Aluno")]
-        public long AlunoId { get; set; }
+        [ForeignKey("Treino")]
+        public long TreinoId { get; set; }
     }
 }

@@ -12,8 +12,8 @@ namespace PlannedTraining.Shared.Models
         public DateTime DataTreino { get; set; }
         public List<Exercicio> Exercicios { get; set; }
         
-        [ForeignKey("Exercicio")]
-        public long ExercicioId { get; set; }
+        [ForeignKey("Aluno")]
+        public long AlunoId { get; set; }
 
     }
 }
