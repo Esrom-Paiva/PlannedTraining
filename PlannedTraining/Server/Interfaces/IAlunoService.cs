@@ -15,6 +15,14 @@ namespace PlannedTraining.Server.Interfaces
 
         void ReativarAluno(long id);
 
+        Treino GetTreinoById(long id);
+
+        void AddTreino(Treino treino);
+
         void DeleteAluno(long id);
+
+        void DeleteTreino(long id);
+
+        void DeleteExercicio(long id);
     }
 }

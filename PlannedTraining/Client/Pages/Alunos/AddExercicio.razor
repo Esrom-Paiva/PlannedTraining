@@ -1,0 +1,28 @@
+﻿@page "/aluno/exercicio/{idAluno}"
+@using PlannedTraining.Shared.Models
+@inject NavigationManager NavigationManager
+@inject HttpClient Http
+
+<h3>Exerceício</h3>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    public Treino Treino { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            //Treinos = await Http.GetFromJsonAsync<List<Treino>>($"api/alunos/exercicios/{Id}");
+            
+
+        }
+        catch (Exception ex)
+        {
+
+            throw ex;
+        }
+
+    }
+}

@@ -1,0 +1,186 @@
+﻿@page "/aluno/treinos/{id:int}"
+@using PlannedTraining.Shared.Models
+@inject NavigationManager NavigationManager
+@inject HttpClient Http
+
+<PageTitle>Treinos</PageTitle>
+
+<h3>Treinos</h3>
+<br />
+
+@if (!Edit)
+{
+    <div class="row">
+
+        <div class="col-md-2">
+            <button class="btn btn-primary" @onclick="AddTreino">
+                <i class="fas fa-user-plus"></i>
+                Novo Treino
+            </button>              
+        </div>
+
+        <div class="col-md-2">
+            <a href='/aluno/fetchaluno' class="btn btn-primary" role="button">
+                <i class="fas fa-user-plus"></i>
+                Voltar
+            </a>
+        </div>
+
+    </div>
+    <br />
+
+    @if (Treinos == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <table class="table">
+            @if (Treinos.Any())
+            {
+                <thead>
+                    <tr>
+                        <th>Data do treino</th>
+                        <th>Nome do treino</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var treino in Treinos)
+                    {
+                        <tr>
+                            <td>@treino.DataTreino.ToString("dd/MM/yyyy")</td>
+                            <td>@treino.NomeTreino</td>
+                            <td>
+                                <a class="form-group">
+                                    <button @onclick="@(()=>GetExercicosDoTreino(treino.Id))" class="btn btn-outline-warning">Ver Treino</button>
+                                </a>
+                                <a class="form-group">
+                                    <button @onclick="@(()=>DeletarTreino(treino.Id))" class="btn btn-outline-danger">deletar Treino</button>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            }
+        </table>
+    }
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <a href='/aluno/fetchaluno' class="btn btn-primary" role="button">
+                <i class="fas fa-user-plus"></i>
+                Adicionar Exercicio
+            </a>
+        </div>
+
+        <div class="col-md-2">
+            <a href='/aluno/fetchaluno' class="btn btn-primary" role="button">
+                <i class="fas fa-user-plus"></i>
+                Voltar
+            </a>
+        </div>
+
+    </div>
+    <br />
+
+    <table class="table">
+        @if (Treinos.Any())
+        {
+            <thead>
+                <tr>
+                    <th>Nome do exercício</th>
+                    <th>Descrição</th>
+                    <th>Series</th>
+                    <th>Repeticoes</th>
+                </tr>
+  
+            </thead>
+            <tbody>
+                @foreach (var ex in Exercicios)
+                {
+                    <tr>
+                        <td>@ex.Nome</td>
+                        <td>@ex.Descricao</td>
+                        <td>@ex.Series</td>
+                        <td>@ex.Repeticoes</td>
+                        <td>
+                            <a class="form-group">
+                                <button @onclick="@(()=>DeletarExercico(ex.Id))" class="btn btn-outline-danger">deletar Exercício</button>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        }
+    </table>
+}
+
+@code {
+    
+    private Aluno aluno;
+
+    [Parameter]
+    public int Id { get; set; }
+    
+    public List<Treino> Treinos { get; set; }
+
+    public bool Edit { get; set; } = false;
+
+    public List<Exercicio> Exercicios { get; set; } = new List<Exercicio>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            aluno = await Http.GetFromJsonAsync<Aluno>($"api/alunos/{Id}");
+
+            Treinos = aluno?.Treinos.Where(t => t.RegistroAtivo == true).ToList();
+        }
+        catch (Exception ex)
+        {
+
+            throw ex;
+        }
+
+    }
+    public void GetExercicosDoTreino(long id)
+    {
+        Edit = true;
+
+        Exercicios.Clear();
+
+        Exercicios 
+        = Treinos.FirstOrDefault(x => x.Id == id)
+        .Exercicios.Where(e => e.RegistroAtivo == true)
+        .ToList();
+ 
+    }
+
+    public async Task DeletarTreino(long id)
+    {
+        await Http.DeleteAsync($"api/alunos/treino/{id}");
+
+        Cancel();
+
+    }
+
+    public async Task DeletarExercico(long id)
+    {
+        await Http.DeleteAsync($"api/alunos/exercicio/{id}");
+
+        Cancel();
+
+    }
+
+    public void Cancel()
+    {
+        NavigationManager.NavigateTo("aluno/fetchaluno");
+    }
+
+    public void AddTreino()
+    {
+        NavigationManager.NavigateTo($"aluno/treino/{Id}");
+    }
+}

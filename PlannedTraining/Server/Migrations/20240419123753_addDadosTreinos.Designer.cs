@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PlannedTraining.Server.Context;
 
@@ -11,9 +12,10 @@ using PlannedTraining.Server.Context;
 namespace PlannedTraining.Server.Migrations
 {
     [DbContext(typeof(BaseContext))]
-    partial class BaseContextModelSnapshot : ModelSnapshot
+    [Migration("20240419123753_addDadosTreinos")]
+    partial class addDadosTreinos
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -145,11 +147,11 @@ namespace PlannedTraining.Server.Migrations
                     b.Property<int>("Repeticoes")
                         .HasColumnType("int");
 
-                    b.Property<int>("Series")
-                        .HasColumnType("int");
-
                     b.Property<long>("TreinoId")
                         .HasColumnType("bigint");
+
+                    b.Property<int>("series")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

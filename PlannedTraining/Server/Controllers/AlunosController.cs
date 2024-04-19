@@ -38,6 +38,7 @@ namespace PlannedTraining.Server.Controllers
         public void ReativarAluno(long id)
         {
             _alunoService.ReativarAluno(id);
+
         }
 
         [HttpPost]
@@ -56,6 +57,30 @@ namespace PlannedTraining.Server.Controllers
         public void Delete(long id)
         {
             _alunoService.DeleteAluno(id);
+        }
+
+        [HttpGet("treino/{id}")]
+        public void GetTreino(long id)
+        {
+            _alunoService.GetTreinoById(id);
+        }
+
+        [HttpPost("treino")]
+        public void PostTreino(Treino treino)
+        {
+            _alunoService.AddTreino(treino);
+        }
+
+        [HttpDelete("treino/{id}")]
+        public void DeleteTreino(long id)
+        {
+            _alunoService.DeleteTreino(id);
+        }
+
+        [HttpDelete("exercicio/{id}")]
+        public void DeleteExercicio(long id)
+        {
+            _alunoService.DeleteExercicio(id);
         }
     }
 }

@@ -1,0 +1,106 @@
+﻿@page "/aluno/treino/{Id:long}"
+@using PlannedTraining.Shared.Models
+@inject NavigationManager NavigationManager
+@inject HttpClient Http
+
+<h3>Adicionar Treino</h3>
+<EditForm Model="@treino" OnValidSubmit="SalvarTreino">
+    <div class="row">      
+            <div class ="col-sm-6">
+                <label>Nome do Treino:</label>
+                <InputText @bind-Value="@treino.NomeTreino" class="form-control col-sm-3" />
+                <ValidationMessage For="@(() => treino.NomeTreino)" />
+            </div>
+            <div class="col-sm-4">
+                <label>Data do Treino :</label>
+                <InputDate @bind-Value="@treino.DataTreino" class="form-control col-sm-3" />
+                <ValidationMessage For="@(() => treino.DataTreino)" />
+            </div>
+    </div>
+    
+
+    <h3>Exercícios</h3>
+    @foreach (var exercicio in treino.Exercicios)
+    {
+        <div class="row">
+           
+            <div class="col-sm-5">
+                <label>Nome do Exercício:</label>
+                <InputText id="Nome" class="form-control" placeholder="Nome" @bind-Value="exercicio.Nome" />
+                <ValidationMessage For="@(() => exercicio.Nome)" />
+            </div>
+           
+            <div class="col-sm-5">
+                <label>Descrição do Exercício:</label>
+                <InputText id="Descricao" class="form-control" placeholder="Descricao" @bind-Value="exercicio.Descricao" />
+                <ValidationMessage For="@(() => exercicio.Descricao)" />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-5">
+                <label>Quantidades de Series:</label>
+                <InputNumber id="Series" class="form-control" placeholder="Series" @bind-Value="exercicio.Series" />
+                <ValidationMessage For="@(() => exercicio.Series)" />
+            </div>
+          
+            <div class="col-sm-5">
+                <label>Quantidades de Repetições:</label>
+                <InputNumber id="Repeticoes" class="form-control" placeholder="Repeticoes" @bind-Value="exercicio.Repeticoes" />
+                <ValidationMessage For="@(() => exercicio.Repeticoes)" />
+            </div>          
+            <div class="col-sm-3">
+                <br />
+                <a href="javascript:void(0)" class="btn btn-danger" @onclick="@(()=>OnTreinoDelete(exercicio))">Remover Exercício</a>
+            </div>
+        </div>     
+    }
+    <br />
+    <div class="col-sm-3">
+        <a href="javascript:void(0)" class="btn btn-success" @onclick="@(()=>OnTreinoAdd(treino))">Adicionar Treino</a>
+    </div> 
+    <br />
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button class="btn btn-light" @onclick="Cancel">Cancel</button>
+    </div>
+    <br />
+</EditForm>
+
+@code {
+    [Parameter]
+    public long Id { get; set; }
+
+    Treino treino = new Treino()
+    {
+        NomeTreino = string.Empty,
+        DataTreino = DateTime.Now,
+        Exercicios  = new List<Exercicio>()
+    };
+
+    protected async Task SalvarTreino()
+    {
+        treino.AlunoId = Id;
+
+        //treino.Exercicios.AddRange(Exercicios);
+
+    await Http.PostAsJsonAsync("api/alunos/treino", treino);
+
+        Cancel();
+    }
+
+    public void OnTreinoDelete(Exercicio exercicio)
+    {
+        treino.Exercicios.Remove(exercicio);
+    }
+
+    public void OnTreinoAdd(Treino treino)
+    {
+        treino.Exercicios.Add(new Exercicio { Nome = string.Empty, Descricao = string.Empty, Series = 0, Repeticoes = 0 });
+    }
+
+    public void Cancel()
+    {
+        NavigationManager.NavigateTo("aluno/fetchaluno");
+    }
+}

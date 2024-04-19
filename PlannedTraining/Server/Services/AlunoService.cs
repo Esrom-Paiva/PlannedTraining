@@ -48,6 +48,8 @@ namespace PlannedTraining.Server.Services
             {
                 var aluno = _context.Alunos
                     .Include(x => x.Endereco)
+                    .Include(x => x.Treinos)
+                    .ThenInclude(t => t.Exercicios)
                     .FirstOrDefault(x => x.Id == id && x.RegistroAtivo);
 
                 return aluno;
@@ -130,6 +132,92 @@ namespace PlannedTraining.Server.Services
                 }
                 else
                     throw new ArgumentNullException();
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public void DeleteTreino(long id)
+        {
+            try
+            {
+                var treino 
+                    = _context
+                    .Treinos.FirstOrDefault(x => x.Id == id);
+
+                if (treino is not null)
+                {
+                    treino.RegistroAtivo = false;
+                    treino.ModificadoEm = DateTime.Now;
+
+                    _context.Treinos.Update(treino);
+                    _context.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+        public void DeleteExercicio(long id)
+        {
+            try
+            {
+                var exercicio
+                    = _context
+                    .Exercicios.FirstOrDefault(x => x.Id == id);
+
+                if (exercicio is not null)
+                {
+                    exercicio.RegistroAtivo = false;
+                    exercicio.ModificadoEm = DateTime.Now;
+
+                    _context.Exercicios.Update(exercicio);
+                    _context.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+        public Treino GetTreinoById(long id)
+        {
+            try
+            {
+                var treino
+                    = _context
+                    .Treinos.FirstOrDefault(x => x.Id == id);
+
+                return treino;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+        public void AddTreino(Treino treino)
+        {
+            try
+            {
+                treino.InseridoEm = DateTime.Now;
+                treino.ModificadoEm = DateTime.Now;
+
+                treino.Exercicios.ForEach(treino =>
+                {
+                    treino.InseridoEm = DateTime.Now;
+                    treino.ModificadoEm = DateTime.Now;
+                });
+
+                _context.Treinos.Add(treino);
+                _context.SaveChanges();
             }
             catch
             {

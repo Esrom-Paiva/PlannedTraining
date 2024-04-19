@@ -17,6 +17,8 @@ namespace PlannedTraining.Shared.Models
 
         public string Email { get; set; } = null!;
 
+        public List<Treino> Treinos { get; set; }
+
         [NotMapped]
         public int Idade
         { get { return DateTime.Now.Year - DataNascimento.Year; } }

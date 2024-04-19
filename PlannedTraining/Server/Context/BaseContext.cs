@@ -14,6 +14,7 @@ namespace PlannedTraining.Server.Context
         }
         public BaseContext(DbContextOptions<BaseContext> options) : base(options)
         {
+            this.ChangeTracker.LazyLoadingEnabled = false;
         }
 
         public virtual DbSet<Aluno> Alunos { get; set; }
