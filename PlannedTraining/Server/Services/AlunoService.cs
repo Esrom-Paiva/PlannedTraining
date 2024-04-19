@@ -223,6 +223,25 @@ namespace PlannedTraining.Server.Services
             {
                 throw;
             }
+        }        
+        public void AddExercicio(List<Exercicio> exercicios)
+        {
+            try
+            {
+                exercicios.ForEach(treino =>
+                {
+                    treino.InseridoEm = DateTime.Now;
+                    treino.ModificadoEm = DateTime.Now;
+                });
+
+                _context.Exercicios.AddRange(exercicios);
+                _context.SaveChanges();
+            }
+            catch
+            {
+                throw;
+            }
         }
+
     }
 }

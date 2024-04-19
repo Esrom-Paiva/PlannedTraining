@@ -68,11 +68,12 @@
 else
 {
     <div class="row">
+
         <div class="col-md-4">
-            <a href='/aluno/fetchaluno' class="btn btn-primary" role="button">
+            <button class="btn btn-primary" @onclick="AddExercicio">
                 <i class="fas fa-user-plus"></i>
-                Adicionar Exercicio
-            </a>
+            Adicionar Exercício
+            </button>
         </div>
 
         <div class="col-md-2">
@@ -118,12 +119,14 @@ else
 }
 
 @code {
-    
+
     private Aluno aluno;
 
     [Parameter]
     public int Id { get; set; }
-    
+
+    public long IdTreino { get; set; }
+
     public List<Treino> Treinos { get; set; }
 
     public bool Edit { get; set; } = false;
@@ -148,6 +151,8 @@ else
     public void GetExercicosDoTreino(long id)
     {
         Edit = true;
+
+        IdTreino = id;
 
         Exercicios.Clear();
 
@@ -182,5 +187,10 @@ else
     public void AddTreino()
     {
         NavigationManager.NavigateTo($"aluno/treino/{Id}");
+    }
+
+    public void AddExercicio()
+    {
+        NavigationManager.NavigateTo($"aluno/exercicio/{IdTreino}");
     }
 }

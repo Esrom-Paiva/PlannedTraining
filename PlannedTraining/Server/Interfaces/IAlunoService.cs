@@ -19,6 +19,8 @@ namespace PlannedTraining.Server.Interfaces
 
         void AddTreino(Treino treino);
 
+        void AddExercicio(List<Exercicio> exercicios);
+
         void DeleteAluno(long id);
 
         void DeleteTreino(long id);

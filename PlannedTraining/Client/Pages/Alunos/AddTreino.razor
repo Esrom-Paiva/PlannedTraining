@@ -82,9 +82,7 @@
     {
         treino.AlunoId = Id;
 
-        //treino.Exercicios.AddRange(Exercicios);
-
-    await Http.PostAsJsonAsync("api/alunos/treino", treino);
+        await Http.PostAsJsonAsync("api/alunos/treino", treino);
 
         Cancel();
     }

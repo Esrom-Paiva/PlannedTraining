@@ -71,6 +71,12 @@ namespace PlannedTraining.Server.Controllers
             _alunoService.AddTreino(treino);
         }
 
+        [HttpPost("exercicio")]
+        public void PostExercicio(List<Exercicio> exercicio)
+        {
+            _alunoService.AddExercicio(exercicio);
+        }
+
         [HttpDelete("treino/{id}")]
         public void DeleteTreino(long id)
         {

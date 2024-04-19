@@ -1,28 +1,83 @@
-﻿@page "/aluno/exercicio/{idAluno}"
+﻿@page "/aluno/exercicio/{Id:long}"
 @using PlannedTraining.Shared.Models
 @inject NavigationManager NavigationManager
 @inject HttpClient Http
 
 <h3>Exerceício</h3>
+<EditForm Model="@Exercicios" OnValidSubmit="SalvaExercicio">
+    @foreach (var exercicio in Exercicios)
+    {
+        <div class="row">
+
+            <div class="col-sm-5">
+                <label>Nome do Exercício:</label>
+                <InputText id="Nome" class="form-control" placeholder="Nome" @bind-Value="exercicio.Nome" />
+                <ValidationMessage For="@(() => exercicio.Nome)" />
+            </div>
+
+            <div class="col-sm-5">
+                <label>Descrição do Exercício:</label>
+                <InputText id="Descricao" class="form-control" placeholder="Descricao" @bind-Value="exercicio.Descricao" />
+                <ValidationMessage For="@(() => exercicio.Descricao)" />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-5">
+                <label>Quantidades de Series:</label>
+                <InputNumber id="Series" class="form-control" placeholder="Series" @bind-Value="exercicio.Series" />
+                <ValidationMessage For="@(() => exercicio.Series)" />
+            </div>
+
+            <div class="col-sm-5">
+                <label>Quantidades de Repetições:</label>
+                <InputNumber id="Repeticoes" class="form-control" placeholder="Repeticoes" @bind-Value="exercicio.Repeticoes" />
+                <ValidationMessage For="@(() => exercicio.Repeticoes)" />
+            </div>
+            <div class="col-sm-3">
+                <br />
+                <a href="javascript:void(0)" class="btn btn-danger" @onclick="@(()=>OnTreinoDelete(exercicio))">Remover Exercício</a>
+            </div>
+        </div>
+    }
+    <br />
+    <div class="col-sm-3">
+        <a href="javascript:void(0)" class="btn btn-success" @onclick="@(()=>OnTreinoAdd())">Adicionar Treino</a>
+    </div>
+    <br />
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button class="btn btn-light" @onclick="Cancel">Cancel</button>
+    </div>
+    <br />
+</EditForm>
 
 @code {
     [Parameter]
-    public int Id { get; set; }
-    public Treino Treino { get; set; }
+    public long Id { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    List<Exercicio> Exercicios = new List<Exercicio>();
+
+    protected async Task SalvaExercicio()
     {
-        try
-        {
-            //Treinos = await Http.GetFromJsonAsync<List<Treino>>($"api/alunos/exercicios/{Id}");
-            
+        Exercicios.ForEach(x => x.TreinoId = Id);
 
-        }
-        catch (Exception ex)
-        {
+        await Http.PostAsJsonAsync("api/alunos/exercicio", Exercicios);
 
-            throw ex;
-        }
+        Cancel();
+    }
+    public void OnTreinoDelete(Exercicio exercicio)
+    {
+        Exercicios.Remove(exercicio);
+    }
 
+    public void OnTreinoAdd()
+    {
+        Exercicios.Add(new Exercicio { Nome = string.Empty, Descricao = string.Empty, Series = 0, Repeticoes = 0 });
+    }
+
+    public void Cancel()
+    {
+        NavigationManager.NavigateTo("aluno/fetchaluno");
     }
 }
