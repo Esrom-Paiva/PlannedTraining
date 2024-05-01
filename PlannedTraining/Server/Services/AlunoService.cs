@@ -13,12 +13,13 @@ namespace PlannedTraining.Server.Services
         {
             _context = baseContext;
         }
-        
+
+        #region aluno
         public List<Aluno> GetAlunos()
         {
             try
             {
-                return 
+                return
                     _context.
                     Alunos.Where(x => x.RegistroAtivo == true)
                     .OrderByDescending(x => x.InseridoEm).ToList();
@@ -28,11 +29,12 @@ namespace PlannedTraining.Server.Services
                 throw;
             }
         }
+
         public List<Aluno> GetAlunosInativados()
         {
             try
             {
-                return 
+                return
                     _context.
                     Alunos.Where(x => x.RegistroAtivo == false)
                     .OrderByDescending(x => x.InseridoEm).ToList();
@@ -42,6 +44,7 @@ namespace PlannedTraining.Server.Services
                 throw;
             }
         }
+
         public Aluno GetAluno(long id)
         {
             try
@@ -59,6 +62,7 @@ namespace PlannedTraining.Server.Services
                 throw;
             }
         }
+
         public void AddAluno(Aluno aluno)
         {
             try
@@ -138,12 +142,14 @@ namespace PlannedTraining.Server.Services
                 throw;
             }
         }
+        #endregion
 
+        #region treino
         public void DeleteTreino(long id)
         {
             try
             {
-                var treino 
+                var treino
                     = _context
                     .Treinos.FirstOrDefault(x => x.Id == id);
 
@@ -162,6 +168,7 @@ namespace PlannedTraining.Server.Services
                 throw ex;
             }
         }
+
         public void DeleteExercicio(long id)
         {
             try
@@ -223,7 +230,8 @@ namespace PlannedTraining.Server.Services
             {
                 throw;
             }
-        }        
+        }
+
         public void AddExercicio(List<Exercicio> exercicios)
         {
             try
@@ -242,6 +250,7 @@ namespace PlannedTraining.Server.Services
                 throw;
             }
         }
+        #endregion
 
     }
 }

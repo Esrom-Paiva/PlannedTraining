@@ -4,7 +4,9 @@ namespace PlannedTraining.Server.Interfaces
 {
     public interface IAlunoService
     {
+        #region aluno
         List<Aluno> GetAlunos();
+
         Aluno GetAluno(long id);
 
         List<Aluno> GetAlunosInativados();
@@ -15,16 +17,19 @@ namespace PlannedTraining.Server.Interfaces
 
         void ReativarAluno(long id);
 
+        void DeleteAluno(long id);
+        #endregion
+
+        #region treino
         Treino GetTreinoById(long id);
 
         void AddTreino(Treino treino);
 
         void AddExercicio(List<Exercicio> exercicios);
 
-        void DeleteAluno(long id);
-
         void DeleteTreino(long id);
 
         void DeleteExercicio(long id);
+        #endregion
     }
 }
