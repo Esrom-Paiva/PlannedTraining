@@ -14,7 +14,7 @@ namespace PlannedTraining.Shared.Models
 
         public decimal DataPagamento { get; set; }
 
-        [ForeignKey("Treino")]
+        [ForeignKey("Aluno")]
         public Aluno AlunoId { get; set; }
     }
 }
