@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol;
+using PlannedTraining.Client.Pages.Alunos;
 using PlannedTraining.Server.Context;
 using PlannedTraining.Server.Interfaces;
 using PlannedTraining.Shared.Models;
@@ -252,5 +254,75 @@ namespace PlannedTraining.Server.Services
         }
         #endregion
 
+        #region Pagamento
+        public List<Mensalidade> GetMensalidadesByIdAluno(long idAluno)
+        {
+            var mensalidade = new List<Mensalidade>();
+
+            mensalidade =
+                _context.Mensalidades
+                .Where(m => m.RegistroAtivo == true && m.AlunoId == idAluno)
+                .OrderByDescending(x => x.InseridoEm)
+                .ToList();
+
+            return mensalidade;
+
+        }
+        public void AddPagamento(Mensalidade mensalidade)
+        {
+            try
+            {
+                mensalidade.InseridoEm = DateTime.Now;
+                mensalidade.ModificadoEm = DateTime.Now;
+
+                _context.Mensalidades.Add(mensalidade);
+                _context.SaveChanges();
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public bool VerificaSeExisteMensalidadePagaParaData(DateTime dataMensalidade)
+         {
+            try 
+            {
+                var mes = dataMensalidade.Month;
+
+                var ano = dataMensalidade.Year;
+
+                var mensalidade
+                    = _context.Mensalidades
+                    .Where(x => x.RegistroAtivo == true
+                                  && x.DataMensalidade.Month == mes
+                                  && x.DataMensalidade.Year == ano);
+
+                var result = mensalidade.Count();
+
+                return result > 0;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public void DeleteMensalidade(long id)
+        {
+            var mensalidade =
+            _context.Mensalidades
+                .FirstOrDefault(m => m.Id == id);
+
+            if (mensalidade is not null)
+            {
+                mensalidade.RegistroAtivo = false;
+                mensalidade.ModificadoEm = DateTime.Now;
+
+                _context.Mensalidades.Update(mensalidade);
+                _context.SaveChanges();
+            }
+        }
+        #endregion
     }
 }

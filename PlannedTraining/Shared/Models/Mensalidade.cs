@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace PlannedTraining.Shared.Models
 {
@@ -12,9 +13,11 @@ namespace PlannedTraining.Shared.Models
     {
         public decimal ValorPago { get; set; }
 
-        public decimal DataPagamento { get; set; }
+        public DateTime DataPagamento { get; set; }
+
+        public DateTime DataMensalidade { get; set; }
 
         [ForeignKey("Aluno")]
-        public Aluno AlunoId { get; set; }
+        public long AlunoId { get; set; }
     }
 }

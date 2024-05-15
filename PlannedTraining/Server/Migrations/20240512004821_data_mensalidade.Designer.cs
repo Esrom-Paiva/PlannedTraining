@@ -12,8 +12,8 @@ using PlannedTraining.Server.Context;
 namespace PlannedTraining.Server.Migrations
 {
     [DbContext(typeof(BaseContext))]
-    [Migration("20240501215412_ajusteMigracaoMensalidade")]
-    partial class ajusteMigracaoMensalidade
+    [Migration("20240512004821_data_mensalidade")]
+    partial class data_mensalidade
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -158,6 +158,40 @@ namespace PlannedTraining.Server.Migrations
                     b.HasIndex("TreinoId");
 
                     b.ToTable("Exercicios");
+                });
+
+            modelBuilder.Entity("PlannedTraining.Shared.Models.Mensalidade", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+
+                    b.Property<long>("AlunoId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("DataMensalidade")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DataPagamento")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("InseridoEm")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ModificadoEm")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("RegistroAtivo")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("ValorPago")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Mensalidades");
                 });
 
             modelBuilder.Entity("PlannedTraining.Shared.Models.Treino", b =>

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PlannedTraining.Server.Context;
 
@@ -11,9 +12,10 @@ using PlannedTraining.Server.Context;
 namespace PlannedTraining.Server.Migrations
 {
     [DbContext(typeof(BaseContext))]
-    partial class BaseContextModelSnapshot : ModelSnapshot
+    [Migration("20240512003613_data_pagamento")]
+    partial class data_pagamento
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -168,9 +170,6 @@ namespace PlannedTraining.Server.Migrations
 
                     b.Property<long>("AlunoId")
                         .HasColumnType("bigint");
-
-                    b.Property<DateTime>("DataMensalidade")
-                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("DataPagamento")
                         .HasColumnType("datetime2");

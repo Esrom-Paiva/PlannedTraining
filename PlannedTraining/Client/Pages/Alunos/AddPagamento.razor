@@ -1,0 +1,80 @@
+﻿@page "/aluno/pagamento/pagar/{Id:long}"
+@using PlannedTraining.Shared
+@using PlannedTraining.Shared.Models
+@using System.Globalization
+@using System.ComponentModel.DataAnnotations
+@inject NavigationManager NavigationManager
+@inject HttpClient Http
+
+<PageTitle>Realizar Pagamento</PageTitle>
+
+<h3>Realizar Pagamento</h3>
+
+ <EditForm Model="@Pagamento" OnValidSubmit="SalvaPagamento">
+
+    <div class="row">
+         <div class="col-sm-6">
+            <label>Valor Pagamento:</label>
+            <InputNumber @bind-Value="@Pagamento.ValorPago" class="form-control col-sm-3" />
+            <ValidationMessage For="@(() => Pagamento.ValorPago)" />
+        </div> 
+        <div class="col-sm-4">
+            <label>Data da Mensalidade :</label>
+            <InputDate Type="InputDateType.Month" @bind-Value="@Pagamento.DataMensalidade" @bind-Value:format="{#.##}" class="form-control col-sm-3" />
+            <ValidationMessage For="@(() => Pagamento.DataMensalidade)" />
+        </div>
+    </div>
+    <br />
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button class="btn btn-light" @onclick="Cancel">Cancel</button>
+    </div>
+    <br />
+</EditForm> 
+
+
+@code {
+    [Parameter]
+    public long Id { get; set; }
+
+    private DateOnly dataMensalidade { get; set; }
+
+    private Mensalidade Pagamento = new Mensalidade { DataMensalidade = DateTime.Now, DataPagamento = DateTime.Now, ValorPago = decimal.Zero };
+
+    protected async Task SalvaPagamento()
+    {
+        var mensalidade = await VerificaSeExisteMensalidadePagaParaData(Pagamento.DataMensalidade);
+
+        if (!mensalidade)
+        {
+            Pagamento.AlunoId = Id;
+
+            await Http.PostAsJsonAsync("api/alunos/mensalidade", Pagamento);
+
+            Cancel();
+        }
+    }
+
+    async Task<bool> VerificaSeExisteMensalidadePagaParaData(DateTime dataMensalidade)
+    {
+        var data = dataMensalidade.ToString("yyyy-MM-dd");
+
+        var result = await Http.GetFromJsonAsync<bool>($"api/alunos/Mensalidade/VerificaSeExisteMensalidadePagaParaData/{data}");
+
+        return result;
+    }
+
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("aluno/fetchaluno");
+    }
+
+    // ValidationResult Validation(decimal valorPago)
+    // {
+        
+    //     if (valorPago <= decimal.Zero)
+    //     {
+    //        //return new ValidationResult
+    //     }
+    // }
+}

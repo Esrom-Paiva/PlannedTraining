@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PlannedTraining.Server.Interfaces;
 using PlannedTraining.Shared.Models;
+using System.Globalization;
 
 namespace PlannedTraining.Server.Controllers
 {
@@ -15,6 +16,7 @@ namespace PlannedTraining.Server.Controllers
             _alunoService = alunoService;
         }
 
+        #region alunos
         [HttpGet]
         public IEnumerable<Aluno> Get()
         {
@@ -42,7 +44,7 @@ namespace PlannedTraining.Server.Controllers
         }
 
         [HttpPost]
-        public void Post(Aluno aluno) 
+        public void Post(Aluno aluno)
         {
             _alunoService.AddAluno(aluno);
         }
@@ -58,7 +60,9 @@ namespace PlannedTraining.Server.Controllers
         {
             _alunoService.DeleteAluno(id);
         }
+        #endregion
 
+        #region Treinos
         [HttpGet("treino/{id}")]
         public void GetTreino(long id)
         {
@@ -88,5 +92,34 @@ namespace PlannedTraining.Server.Controllers
         {
             _alunoService.DeleteExercicio(id);
         }
+        #endregion
+
+        #region Pagamentos
+        [HttpGet("mensalidade/MensalidadesByIdAluno/{idAluno}")]
+        public List<Mensalidade> GetMensalidadesByIdAluno(long idAluno)
+        {
+            return _alunoService.GetMensalidadesByIdAluno(idAluno);
+        }
+
+        [HttpPost("mensalidade")]
+        public void SalvarPagamento(Mensalidade mensalidade)
+        {
+            _alunoService.AddPagamento(mensalidade);
+        }
+
+        [HttpGet("mensalidade/VerificaSeExisteMensalidadePagaParaData/{data}")]
+        public bool VerificaSeExisteMensalidadePagaParaData(string data)
+        {
+            var dataMens = DateTime.ParseExact(data, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+
+            return _alunoService.VerificaSeExisteMensalidadePagaParaData(dataMens);
+        }
+
+        [HttpDelete("mensalidade/DeleteMensalidade/{id}")]
+        public void DeleteMensalidade(long id)
+        {
+            _alunoService.DeleteMensalidade(id);
+        }
+        #endregion
     }
 }

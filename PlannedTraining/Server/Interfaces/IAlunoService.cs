@@ -31,5 +31,12 @@ namespace PlannedTraining.Server.Interfaces
 
         void DeleteExercicio(long id);
         #endregion
+
+        #region mensalidade
+        List<Mensalidade> GetMensalidadesByIdAluno(long idAluno);
+        bool VerificaSeExisteMensalidadePagaParaData(DateTime dataMensalidade);
+        void AddPagamento(Mensalidade mensalidade);
+        void DeleteMensalidade(long id);
+        #endregion
     }
 }

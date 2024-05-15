@@ -21,5 +21,6 @@ namespace PlannedTraining.Server.Context
         public virtual DbSet<Endereco> Enderecos { get; set; }
         public virtual DbSet<Exercicio> Exercicios { get; set; }
         public virtual DbSet<Treino> Treinos { get; set; }
+        public virtual DbSet<Mensalidade> Mensalidades { get; set; }
     }
 }

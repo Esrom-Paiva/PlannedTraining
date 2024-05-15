@@ -1,0 +1,96 @@
+﻿@page "/aluno/pagamento/{id:long}"
+@using PlannedTraining.Shared.Models
+@inject NavigationManager NavigationManager
+@inject HttpClient Http
+
+<PageTitle>Pagamentos</PageTitle>
+
+<h3>Pagamentos</h3>
+
+<br>
+@{
+    <div class="row">
+
+        <div class="col-md-4">
+            <button class="btn btn-primary" @onclick="AddPagamento">
+                <i class="fas fa-user-plus"></i>
+                Realizar Pagamento
+            </button>
+        </div>
+
+        <div class="col-md-2">
+            <a href='/aluno/fetchaluno' class="btn btn-primary" role="button">
+                <i class="fas fa-user-plus"></i>
+                Voltar
+            </a>
+        </div>
+
+    </div>
+    <br />
+    <table class="table">
+        @if (mensalidades.Any())
+        {   
+            <thead>
+                <tr>
+                    <th>Data Pagamento</th>
+                    <th>Valor Pago</th>
+                    <th>Mês Referente</th>
+                </tr>
+
+            </thead>
+            <tbody>
+                @foreach (var mensalidade in mensalidades)
+                {
+                    <tr>
+                        <td>@mensalidade.DataPagamento</td>
+                        <td>@mensalidade.ValorPago</td>
+                        <td>@mensalidade.DataMensalidade.ToString("MM-yyyy")</td>
+                        <td>
+                            <a class="form-group">
+                                <button @onclick="@(()=>DeletarPagamento(mensalidade.Id))" class="btn btn-outline-danger">deletar Pagamento</button>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        }
+    </table>
+}
+
+@code {
+    [Parameter]
+    public long Id { get; set; }
+
+    private List<Mensalidade> mensalidades = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            mensalidades = new List<Mensalidade>();
+            mensalidades = await Http.GetFromJsonAsync<List<Mensalidade>>($"api/alunos/mensalidade/MensalidadesByIdAluno/{Id}");
+        }
+        catch (Exception ex)
+        {
+
+            throw ex;
+        }
+    }
+
+    public void AddPagamento()
+    {
+        NavigationManager.NavigateTo($"aluno/pagamento/pagar/{Id}");
+    }
+
+    public async Task DeletarPagamento(long idMensalidade)
+    {
+        await Http.DeleteAsync($"api/alunos/mensalidade/DeleteMensalidade/{idMensalidade}");
+
+        Cancel();
+    }
+
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("aluno/fetchaluno");
+    }
+}
