@@ -34,7 +34,7 @@ namespace PlannedTraining.Server.Interfaces
 
         #region mensalidade
         List<Mensalidade> GetMensalidadesByIdAluno(long idAluno);
-        bool VerificaSeExisteMensalidadePagaParaData(DateTime dataMensalidade);
+        bool VerificaSeExisteMensalidadePagaParaData(DateTime dataMensalidade, long idAluno);
         void AddPagamento(Mensalidade mensalidade);
         void DeleteMensalidade(long id);
         #endregion

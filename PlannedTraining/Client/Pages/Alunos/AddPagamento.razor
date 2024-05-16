@@ -3,6 +3,7 @@
 @using PlannedTraining.Shared.Models
 @using System.Globalization
 @using System.ComponentModel.DataAnnotations
+@using System.Text
 @inject NavigationManager NavigationManager
 @inject HttpClient Http
 
@@ -10,27 +11,42 @@
 
 <h3>Realizar Pagamento</h3>
 
- <EditForm Model="@Pagamento" OnValidSubmit="SalvaPagamento">
+@if (!popup)
+{
+    <EditForm Model="@Pagamento" OnValidSubmit="SalvaPagamento">
 
+        <div class="row">
+            <div class="col-sm-6">
+                <label>Valor Pagamento:</label>
+                <InputNumber @bind-Value="@Pagamento.ValorPago" class="form-control col-sm-3" />
+                <ValidationMessage For="@(() => Pagamento.ValorPago)" />
+            </div>
+            <div class="col-sm-4">
+                <label>Data da Mensalidade :</label>
+                <InputDate Type="InputDateType.Month" @bind-Value="@Pagamento.DataMensalidade" @bind-Value:format="{#.##}" class="form-control col-sm-3" />
+                <ValidationMessage For="@(() => Pagamento.DataMensalidade)" />
+            </div>
+        </div>
+        <br />
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button class="btn btn-light" @onclick="Cancel">Cancel</button>
+        </div>
+        <br />
+    </EditForm>
+}
+else
+{
     <div class="row">
-         <div class="col-sm-6">
-            <label>Valor Pagamento:</label>
-            <InputNumber @bind-Value="@Pagamento.ValorPago" class="form-control col-sm-3" />
-            <ValidationMessage For="@(() => Pagamento.ValorPago)" />
-        </div> 
-        <div class="col-sm-4">
-            <label>Data da Mensalidade :</label>
-            <InputDate Type="InputDateType.Month" @bind-Value="@Pagamento.DataMensalidade" @bind-Value:format="{#.##}" class="form-control col-sm-3" />
-            <ValidationMessage For="@(() => Pagamento.DataMensalidade)" />
+        <div class="alert alert-danger" role="alert">
+            @message
+        </div>
+
+        <div class="col-sm-6">
+            <button class="btn btn-outline-warning" @onclick="reeditar">Voltar</button>
         </div>
     </div>
-    <br />
-    <div class="form-group">
-        <button type="submit" class="btn btn-primary">Save</button>
-        <button class="btn btn-light" @onclick="Cancel">Cancel</button>
-    </div>
-    <br />
-</EditForm> 
+}
 
 
 @code {
@@ -39,13 +55,17 @@
 
     private DateOnly dataMensalidade { get; set; }
 
+    public bool popup { get; set; } = false;
+
+    public string message { get; set; } = string.Empty;
+
     private Mensalidade Pagamento = new Mensalidade { DataMensalidade = DateTime.Now, DataPagamento = DateTime.Now, ValorPago = decimal.Zero };
 
     protected async Task SalvaPagamento()
     {
         var mensalidade = await VerificaSeExisteMensalidadePagaParaData(Pagamento.DataMensalidade);
 
-        if (!mensalidade)
+        if (!mensalidade && Pagamento.ValorPago > decimal.Zero)
         {
             Pagamento.AlunoId = Id;
 
@@ -53,15 +73,39 @@
 
             Cancel();
         }
+        else
+        {
+            Erro(Pagamento, mensalidade);
+        }
     }
 
     async Task<bool> VerificaSeExisteMensalidadePagaParaData(DateTime dataMensalidade)
     {
         var data = dataMensalidade.ToString("yyyy-MM-dd");
 
-        var result = await Http.GetFromJsonAsync<bool>($"api/alunos/Mensalidade/VerificaSeExisteMensalidadePagaParaData/{data}");
+        var result = await Http.GetFromJsonAsync<bool>($"api/alunos/Mensalidade/VerificaSeExisteMensalidadePagaParaData/{data}/{Id}");
 
         return result;
+    }
+
+    void Erro(Mensalidade Pagamento, bool existeMensalidadeData)
+    {
+        popup = true;
+
+        var mensagem = new StringBuilder();
+
+        if (Pagamento.ValorPago is decimal.Zero)
+        {
+            mensagem.Append("Valor pagamento não pode ser Zero");
+
+            if (existeMensalidadeData)
+                mensagem.Append(", ");
+        }
+        if (existeMensalidadeData)
+        {
+            mensagem.Append("Já existe pagamento para essa data de mensalidade");
+        }
+        message = mensagem.ToString();
     }
 
     void Cancel()
@@ -69,12 +113,11 @@
         NavigationManager.NavigateTo("aluno/fetchaluno");
     }
 
-    // ValidationResult Validation(decimal valorPago)
-    // {
-        
-    //     if (valorPago <= decimal.Zero)
-    //     {
-    //        //return new ValidationResult
-    //     }
-    // }
+    void reeditar()
+    {
+        popup = false;
+
+        NavigationManager.NavigateTo($"aluno/pagamento/pagar/{Id}");
+    }
+
 }

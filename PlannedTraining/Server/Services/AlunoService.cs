@@ -284,7 +284,7 @@ namespace PlannedTraining.Server.Services
             }
         }
 
-        public bool VerificaSeExisteMensalidadePagaParaData(DateTime dataMensalidade)
+        public bool VerificaSeExisteMensalidadePagaParaData(DateTime dataMensalidade, long idAluno)
          {
             try 
             {
@@ -295,6 +295,7 @@ namespace PlannedTraining.Server.Services
                 var mensalidade
                     = _context.Mensalidades
                     .Where(x => x.RegistroAtivo == true
+                                  && x.AlunoId == idAluno
                                   && x.DataMensalidade.Month == mes
                                   && x.DataMensalidade.Year == ano);
 

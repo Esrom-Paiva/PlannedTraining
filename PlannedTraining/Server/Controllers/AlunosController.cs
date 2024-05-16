@@ -107,12 +107,12 @@ namespace PlannedTraining.Server.Controllers
             _alunoService.AddPagamento(mensalidade);
         }
 
-        [HttpGet("mensalidade/VerificaSeExisteMensalidadePagaParaData/{data}")]
-        public bool VerificaSeExisteMensalidadePagaParaData(string data)
+        [HttpGet("mensalidade/VerificaSeExisteMensalidadePagaParaData/{data}/{idAluno}")]
+        public bool VerificaSeExisteMensalidadePagaParaData(string data, long idAluno)
         {
             var dataMens = DateTime.ParseExact(data, "yyyy-MM-dd", CultureInfo.InvariantCulture);
 
-            return _alunoService.VerificaSeExisteMensalidadePagaParaData(dataMens);
+            return _alunoService.VerificaSeExisteMensalidadePagaParaData(dataMens, idAluno);
         }
 
         [HttpDelete("mensalidade/DeleteMensalidade/{id}")]
