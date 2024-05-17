@@ -10,10 +10,12 @@ namespace PlannedTraining.Server.Services
     public class AlunoService: IAlunoService
     {
         private readonly BaseContext _context;
+        private readonly IEmailService _emailService;
 
-        public AlunoService(BaseContext baseContext)
+        public AlunoService(BaseContext baseContext, IEmailService emailService)
         {
             _context = baseContext;
+            _emailService = emailService;
         }
 
         #region aluno
@@ -277,6 +279,8 @@ namespace PlannedTraining.Server.Services
 
                 _context.Mensalidades.Add(mensalidade);
                 _context.SaveChanges();
+
+                EnviarEmail(mensalidade);
             }
             catch
             {
@@ -322,6 +326,18 @@ namespace PlannedTraining.Server.Services
 
                 _context.Mensalidades.Update(mensalidade);
                 _context.SaveChanges();
+            }
+        }
+        #endregion
+        
+        #region Email
+         public void EnviarEmail(Mensalidade mensalidade)
+        {
+            var aluno = _context.Alunos.FirstOrDefault(a => a.Id == mensalidade.AlunoId);
+            
+            if (aluno is not null)
+            {
+                Task.Run(() => _emailService.SendEmail(aluno.Nome, aluno.Email, mensalidade.ValorPago, mensalidade.DataMensalidade));
             }
         }
         #endregion
