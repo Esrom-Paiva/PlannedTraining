@@ -1,10 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NuGet.Protocol;
-using PlannedTraining.Client.Pages.Alunos;
 using PlannedTraining.Server.Context;
 using PlannedTraining.Server.Interfaces;
 using PlannedTraining.Shared.Models;
-using System.Linq;
 
 namespace PlannedTraining.Server.Services
 {
@@ -73,9 +70,11 @@ namespace PlannedTraining.Server.Services
                 {
                     var aluno = 
                         from alunos in _context.Alunos
-                        where !(idAlunosMensalidadePagaMesCorrente).Contains(alunos.Id)
+                        where !(idAlunosMensalidadePagaMesCorrente).Contains(alunos.Id) 
+                              && alunos.RegistroAtivo == true
                         select alunos;
 
+                   
                     return aluno.Any() ? aluno.ToList() : new List<Aluno> { };
                 }    
             }

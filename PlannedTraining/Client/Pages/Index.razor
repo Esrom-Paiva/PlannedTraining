@@ -1,8 +1,53 @@
 ﻿@page "/"
+@using PlannedTraining.Shared.Models
+@inject NavigationManager NavigationManager
+@inject HttpClient Http
 
 <PageTitle>Index</PageTitle>
 
 <h1>Planned Training</h1>
 
-Sistema de cadastro de alunos e treinos
+<h2>Sistema de cadastro de alunos e treinos</h2>
 
+@{
+    if (alunos == null)
+    {
+        <br />
+        <a>Carreando...</a>
+    }
+    else
+    {
+        <br />
+        <a><strong>Alunos com pendencias de mensalidades</strong></a>
+        <div class="row">
+            @foreach (var aluno in alunos)
+            {
+                   <div class="col-sm-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">@aluno.Nome</h5>
+                            <a href="aluno/pagamento/pagar/@aluno.Id" class="btn btn-primary">Pagar Mensalidade</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+}    
+
+@code{
+    public List<Aluno> alunos { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            alunos = await Http.GetFromJsonAsync<List<Aluno>>($"api/alunos/getAlunoMensalidadeAtrasada");
+        }
+        catch (Exception ex)
+        {
+
+            throw ex;
+        }
+    }
+} 
