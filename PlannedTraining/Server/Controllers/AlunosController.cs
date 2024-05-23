@@ -35,6 +35,12 @@ namespace PlannedTraining.Server.Controllers
             return _alunoService.GetAlunosInativados();
         }
 
+        [HttpGet("getAlunoMensalidadeAtrasada")]
+        public IEnumerable<Aluno> GetAlunoMensalidadeAtrasada()
+        {
+            return _alunoService.GetAlunoMensalidadeAtrasada();
+        }
+
 
         [HttpPost("reativar/{id}")]
         public void ReativarAluno(long id)

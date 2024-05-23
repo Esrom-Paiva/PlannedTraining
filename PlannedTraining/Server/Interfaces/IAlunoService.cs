@@ -10,6 +10,7 @@ namespace PlannedTraining.Server.Interfaces
         Aluno GetAluno(long id);
 
         List<Aluno> GetAlunosInativados();
+        List<Aluno> GetAlunoMensalidadeAtrasada();
 
         void AddAluno(Aluno aluno);
 

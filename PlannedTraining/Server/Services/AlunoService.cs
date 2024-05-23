@@ -4,6 +4,7 @@ using PlannedTraining.Client.Pages.Alunos;
 using PlannedTraining.Server.Context;
 using PlannedTraining.Server.Interfaces;
 using PlannedTraining.Shared.Models;
+using System.Linq;
 
 namespace PlannedTraining.Server.Services
 {
@@ -42,6 +43,41 @@ namespace PlannedTraining.Server.Services
                     _context.
                     Alunos.Where(x => x.RegistroAtivo == false)
                     .OrderByDescending(x => x.InseridoEm).ToList();
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        
+        public List<Aluno> GetAlunoMensalidadeAtrasada()
+        {
+            try
+            {
+                var idAlunosMensalidadePagaMesCorrente
+                    = _context.Mensalidades
+                    .Where(x => x.RegistroAtivo == true
+                                  && x.DataMensalidade.Month == DateTime.Now.Month
+                                  && x.DataMensalidade.Year == DateTime.Now.Year)
+                    .Select(a => a.AlunoId)
+                    .ToList();
+
+                if (!idAlunosMensalidadePagaMesCorrente.Any())
+                {
+                    return
+                    _context.
+                    Alunos.Where(x => x.RegistroAtivo == true)
+                    .OrderByDescending(x => x.InseridoEm).ToList();
+                }
+                else 
+                {
+                    var aluno = 
+                        from alunos in _context.Alunos
+                        where !(idAlunosMensalidadePagaMesCorrente).Contains(alunos.Id)
+                        select alunos;
+
+                    return aluno.Any() ? aluno.ToList() : new List<Aluno> { };
+                }    
             }
             catch
             {
